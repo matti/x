@@ -1,7 +1,8 @@
-FROM ubuntu:18.04
+FROM alpine:3.10
 
-RUN apt-get update && apt-get install -yq --no-install-recommends \
-  xvfb x11vnc
+RUN apk add --no-cache \
+  bash \
+  xvfb x11vnc fluxbox
 
 WORKDIR /app
 COPY app .
