@@ -1,39 +1,23 @@
 #!/usr/bin/env bash
-set -euo pipefail
-
-_term() {
-  >&2 echo "TERM"
-  exit 0
-}
-trap "_term" TERM
-
-_err() {
-  >&2 echo "err: $*"
-  exit 1
-}
-
-set +e
-  rm /tmp/.X0-lock
-set -e
 
 (
-  exec Xvfb :0 -screen 0 1366x768x24 -ac -listen tcp
-) &
+  exec Xvfb :0 -screen 0 1366x768x24 -listen tcp
+) >/dev/xvfb.log 2>&1 &
 
 while ! nc -z localhost 6000; do
-  echo "waiting for localhost:6000"
   sleep 0.1
+  echo "waiting for localhost:6000"
 done
+
 echo "x ready"
 
 (
-  exec fluxbox
-) &
+  exec fluxbox &
+) >/dev/fluxbox.log 2>&1 &
 
 (
   exec x11vnc -display :0 -passwd secret -forever
-) &
+) >/dev/x11vnc.log 2>&1 &
 
 echo "started"
-tail -f /dev/null &
-wait $!
+tail -f /dev/null & wait

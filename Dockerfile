@@ -1,4 +1,4 @@
-FROM alpine:3.10
+FROM alpine:3.16
 
 RUN apk add --no-cache \
   bash \
@@ -6,6 +6,8 @@ RUN apk add --no-cache \
 
 WORKDIR /app
 COPY app .
+
+COPY --from=ghcr.io/matti/tailer:824002811ee20a0dbb19501e77553b49ebdf5869 /tailer /usr/local/bin
 
 ENV DISPLAY=:0
 ENTRYPOINT ["/app/entrypoint.sh"]
